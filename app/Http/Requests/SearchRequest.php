@@ -18,13 +18,6 @@ class SearchRequest extends FormRequest
     {
         return [
             'code' => 'required|integer',
-            'query_type' => 'required|in:' . implode(
-                ',',
-                array_map(
-                    fn($t) => $t->value,
-                    TicketQueryType::cases()
-                )
-            ),
         ];
     }
 
