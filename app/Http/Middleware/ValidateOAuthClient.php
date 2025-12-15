@@ -16,7 +16,6 @@ class ValidateOAuthClient
 
         $clientId = $request->input('client_id');
         $clientSecret = $request->input('client_secret');
-
         if (! $clientId || ! $clientSecret) {
             return response()->json([
                 'message' => 'El origen no está permitido: faltan credenciales del cliente (client_id/client_secret).',

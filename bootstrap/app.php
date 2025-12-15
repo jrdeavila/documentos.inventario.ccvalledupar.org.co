@@ -11,6 +11,9 @@ use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\ValidateOAuthClient;
+use App\Http\Middleware\ValidateToken;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Añade validación de origen (client_id/client_secret) al grupo API
         $middleware->appendToGroup('api', [
             ValidateOAuthClient::class,
+            ValidateToken::class
         ]);
 
         // Puedes agregar rate limiting, etc., aquí
@@ -30,7 +34,17 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Detecta API por prefijo /api o Accept JSON
-        $isApi = fn() => request()->expectsJson() || request()->is('api/*');
+        $isApi = fn() => request()->expectsJson() || request()->is('api/*') || request()->is('oauth/*');
+
+        // Bad Request
+        $exceptions->render(function (BadRequestHttpException $e) use ($isApi) {
+            Log::error($e);
+            if (! $isApi()) return null;
+            return response()->json([
+                'message' => 'Solicitud inválida.',
+            ], 400);
+        });
+
 
         // Validación (422)
         $exceptions->render(function (ValidationException $e) use ($isApi) {
@@ -80,6 +94,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => 'La sesión ha expirado o el token no es válido.',
             ], 419);
         });
+
+
 
         // HttpException genérica (400, 405, 409, 429, 502, 503, etc.)
         $exceptions->render(function (HttpExceptionInterface $e) use ($isApi) {
