@@ -12,6 +12,10 @@ class SearchController extends Controller
     {
         $results = $request->search();
 
+        if ($results->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron resultados'], 404);
+        }
+
         return response()->json(MregEstInscritoResource::collection($results));
     }
 }
