@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\ValidateOAuthClient;
 use App\Http\Middleware\ValidateToken;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -23,6 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // CORS Middleware
+        $middleware->prepend(HandleCors::class);
         // Añade validación de origen (client_id/client_secret) al grupo API
         $middleware->appendToGroup('api', [
             ValidateOAuthClient::class,
