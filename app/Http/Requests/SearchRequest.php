@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\MregEstInscrito;
+use App\Models\MregEstProponente;
 use App\TicketQueryType;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class SearchRequest extends FormRequest
 {
@@ -18,6 +18,13 @@ class SearchRequest extends FormRequest
     {
         return [
             'code' => 'required|integer',
+            'query_type' => 'required|in:' . implode(
+                ',',
+                array_map(
+                    fn($t) => $t->value,
+                    TicketQueryType::cases()
+                )
+            ),
         ];
     }
 
@@ -28,7 +35,11 @@ class SearchRequest extends FormRequest
 
     public function search()
     {
-        $query = MregEstInscrito::query()->where("id", $this->code)->get()->withEstablishments();
+        if (in_array($this->query_type, [TicketQueryType::NONPROFIT->value, TicketQueryType::COMMERCIAL->value])) {
+            $query = MregEstInscrito::query()->where("id", $this->code)->get()->withEstablishments();
+        } else {
+            $query = MregEstProponente::query()->where("id", $this->code)->get();
+        }
         return $query;
     }
 }

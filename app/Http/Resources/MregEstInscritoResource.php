@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\MregEstIncritosStatus;
-use App\Services\MregEstInscritosQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

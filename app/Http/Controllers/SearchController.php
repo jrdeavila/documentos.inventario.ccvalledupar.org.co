@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchRequest;
 use App\Http\Resources\MregEstInscritoResource;
+use App\Http\Resources\MregEstProponenteResource;
+use App\TicketQueryType;
 use Illuminate\Http\JsonResponse;
 
 class SearchController extends Controller
@@ -16,6 +18,8 @@ class SearchController extends Controller
             return response()->json(['message' => 'No se encontraron resultados'], 404);
         }
 
-        return response()->json(MregEstInscritoResource::collection($results));
+        $collection = $request->query_type === TicketQueryType::PROPOSER->value ? MregEstProponenteResource::collection($results) : MregEstInscritoResource::collection($results);
+
+        return response()->json($collection);
     }
 }
