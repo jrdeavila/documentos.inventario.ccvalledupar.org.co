@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('audits', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
+            $table->string('auditable_type')->nullable()->index();
+            $table->unsignedBigInteger('auditable_id')->nullable()->index();
+
+            $table->string('action', 50)->index();
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
+
+            $table->string('ip_address', 45)->nullable();
+            $table->string('user_agent')->nullable();
+            $table->string('url')->nullable();
+            $table->string('method', 10)->nullable();
+
+            $table->string('status', 20)->default('success')->index(); // success|fail
+            $table->string('message')->nullable();
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('audits');
+    }
+};

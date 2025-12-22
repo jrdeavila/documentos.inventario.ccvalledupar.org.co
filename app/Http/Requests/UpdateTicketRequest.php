@@ -5,13 +5,14 @@ namespace App\Http\Requests;
 use App\Models\Ticket;
 use App\TicketQueryType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateTicketRequest extends FormRequest
 {
 
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
     public function rules(): array
     {

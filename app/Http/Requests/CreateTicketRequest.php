@@ -12,13 +12,17 @@ class CreateTicketRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     public function rules(): array
     {
         return [
-            'code' => 'required|integer',
+            'code' => [
+                'required',
+                'integer',
+                'unique:' . Ticket::class . ',code,volume,query_type,' . $this->code . ',' . $this->volume . ',' . $this->query_type
+            ],
             'query_type' => 'required|in:' . implode(
                 ',',
                 array_map(
@@ -31,6 +35,7 @@ class CreateTicketRequest extends FormRequest
             'locker' => 'required|integer|min:1|max:50',
             // Validar que code y query_type sean únicos
             'code' => 'unique:' . Ticket::class . ',code,' . $this->code . ',id,query_type,' . $this->query_type,
+            'status' => 'required|string',
         ];
     }
 
@@ -51,6 +56,8 @@ class CreateTicketRequest extends FormRequest
             'locker.integer' => 'El locker debe ser un número.',
             'locker.min' => 'El estante debe ser mayor o igual a 1.',
             'locker.max' => 'El estante debe ser menor o igual a 50.',
+            'status.required' => 'El estado es requerido.',
+            'status.string' => 'El estado debe ser una cadena de texto.',
         ];
     }
 
@@ -62,6 +69,8 @@ class CreateTicketRequest extends FormRequest
             'row' => $this->row,
             'locker' => $this->locker,
             'query_type' => $this->query_type,
+            'user_id' => Auth::id(),
+            'status' => $this->status
         ]);
     }
 }

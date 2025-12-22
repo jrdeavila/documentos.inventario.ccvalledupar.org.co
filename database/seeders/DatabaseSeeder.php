@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Passport\Client;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,14 +16,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Registrar Client Credentials Passport Client
-        Passport::client()->forceCreate([
-            'name' => 'Laravel Personal Access Client',
-            "id" => "5f4c-9a5e-4d10-87f7-6f4963833460",
-            'secret' => '3fab4f4c-9a5e-4d10-87f7-6f4963833460',
-            'redirect_uris' => ['https://ccvalledupar.org.co'],
-            'grant_types' => ['personal_access', 'refresh_token', 'client_credentials'],
-            'revoked' => false,
+        Artisan::call('passport:client', [
+            '--password' => true,
+            '--name' => 'Password Grant Client',
+            '--provider' => 'users_plain_api',
         ]);
+
+        $output = Artisan::output();
+        // Parsear líneas y extraer "Client ID" y "Client secret" (texto plano que el comando imprime)
+        $this->command->info($output);
+
+
+        // Call the Artisan command to create a client credentials token
+        Artisan::call('passport:client', [
+            '--client' => true,
+            '--name' => 'Client Credentials Client',
+        ]);
+
+        // Parse the output to extract the client ID and client secret
+        $output = Artisan::output();
+        // Parsear líneas y extraer "Client ID" y "Client secret" (texto plano que el comando imprime)
+        $this->command->info($output);
     }
 }

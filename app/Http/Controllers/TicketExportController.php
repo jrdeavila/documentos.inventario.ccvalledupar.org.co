@@ -14,7 +14,13 @@ class TicketExportController extends Controller
         $start = $request->input('start_date');
         $end   = $request->input('end_date');
 
-        $fileName = "tickets_{$start}_a_{$end}.xlsx";
+        if (! $start && ! $end) {
+            $fileName = "tickets.xlsx";
+        }
+
+        if ($start && $end) {
+            $fileName = "tickets_{$start}_a_{$end}.xlsx";
+        }
 
         return Excel::download(new TicketsExport($start, $end), $fileName);
     }

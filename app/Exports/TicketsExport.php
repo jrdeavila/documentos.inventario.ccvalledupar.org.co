@@ -10,10 +10,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class TicketsExport implements FromQuery, WithHeadings, WithMapping, ShouldQueue
 {
-    protected string $startDate;
-    protected string $endDate;
+    protected ?string $startDate;
+    protected ?string $endDate;
 
-    public function __construct(string $startDate, string $endDate)
+    public function __construct(?string $startDate, ?string $endDate)
     {
         $this->startDate = $startDate;
         $this->endDate   = $endDate;
@@ -21,6 +21,10 @@ class TicketsExport implements FromQuery, WithHeadings, WithMapping, ShouldQueue
 
     public function query()
     {
+        // Si las fechas son del mismo día, devuelve todos los tickets
+        if (is_null($this->startDate) && is_null($this->endDate)) {
+            return Ticket::query()->orderBy('created_at', 'asc');
+        }
         // Filtra por created_at entre las fechas (incluyendo todo el día final)
         return Ticket::query()
             ->whereBetween('created_at', [

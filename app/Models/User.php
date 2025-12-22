@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasPermissions;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
+    use HasApiTokens, HasRoles, HasPermissions;
 
     protected $table = "usuarios";
     protected $connection = "timeit";
@@ -17,7 +18,6 @@ class User extends Authenticatable
     protected $primaryKey = "id";
 
     public $timestamps = false;
-
 
     protected $appends = ['role', 'status', 'email', 'employee_id'];
 
@@ -87,5 +87,16 @@ class User extends Authenticatable
     public function setEmployeeIdAttribute($value)
     {
         $this->attributes['Empleados_id'] = $value;
+    }
+
+    public function findForPassport($username)
+    {
+        return $this->where('correo', $username)
+            ->first();
+    }
+
+    public function validateForPassportPassword($password)
+    {
+        return $this->getAuthPassword() === $password;
     }
 }

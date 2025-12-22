@@ -19,8 +19,10 @@ return new class extends Migration
             $table->integer('volume');
             $table->char('row', 1);
             $table->integer('locker');
+            $table->string('status');
+            $table->unsignedBigInteger('user_id')->nullable()->index();
 
-            $table->unique(['code', 'query_type'])->index();
+            $table->unique(['code', 'volume', 'query_type'])->index();
             $table->timestamps();
         });
     }

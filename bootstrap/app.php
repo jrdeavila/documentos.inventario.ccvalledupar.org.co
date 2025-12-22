@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Middleware\AuditRequestMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\ValidateOAuthClient;
 use App\Http\Middleware\ValidateToken;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -31,7 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             ValidateOAuthClient::class,
             ValidateToken::class
         ]);
-
+        //  Alias
+        $middleware->alias([
+            'audit' => AuditRequestMiddleware::class
+        ]);
         // Puedes agregar rate limiting, etc., aquí
         // $middleware->appendToGroup('api', [\Illuminate\Routing\Middleware\ThrottleRequests::class.':60,1']);
     })

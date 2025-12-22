@@ -3,19 +3,20 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TicketExportRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ajusta según tu lógica de autenticación
+        return Auth::check(); // Ajusta según tu lógica de autenticación
     }
 
     public function rules(): array
     {
         return [
-            'start_date' => ['required', 'date', 'date_format:Y-m-d'],
-            'end_date'   => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            'start_date' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'end_date'   => ['nullable', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
         ];
     }
 
