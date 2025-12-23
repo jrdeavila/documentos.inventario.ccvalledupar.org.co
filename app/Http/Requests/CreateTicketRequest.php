@@ -70,7 +70,9 @@ class CreateTicketRequest extends FormRequest
             'locker' => $this->locker,
             'query_type' => $this->query_type,
             'user_id' => Auth::id(),
-            'status' => $this->status
+            'status' => $this->status,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }

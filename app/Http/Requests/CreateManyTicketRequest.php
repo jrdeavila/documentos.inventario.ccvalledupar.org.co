@@ -84,6 +84,8 @@ class CreateManyTicketRequest extends FormRequest
                 $tickets[$key]['query_type'] = $this->input('query_type');
                 $tickets[$key]['user_id'] = Auth::id();
                 $tickets[$key]['status'] = $this->input('status');
+                $tickets[$key]['created_at'] = now();
+                $tickets[$key]['updated_at'] = now();
             }
             DB::table('tickets')->insert($tickets);
             DB::commit();
