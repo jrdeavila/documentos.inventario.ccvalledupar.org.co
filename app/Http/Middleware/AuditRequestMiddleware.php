@@ -12,12 +12,21 @@ class AuditRequestMiddleware
     {
         try {
             $response = $next($request);
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
 
-            Audit::log([
-                'action'  => 'request',
-                'status'  => 'success',
-                'message' => $response->status(),
-            ]);
+                Audit::log([
+                    'action'  => 'request',
+                    'status'  => 'success',
+                    'message' => $response->status()
+                ]);
+            } else {
+                Audit::log([
+                    'action'  => 'request',
+                    'status'  => 'success',
+                    'message' => '200'
+                ]);
+            }
+
 
             return $response;
         } catch (Throwable $e) {
