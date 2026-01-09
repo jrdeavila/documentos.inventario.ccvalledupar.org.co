@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->enum('query_type', array_map(fn($t) => $t->value, TicketQueryType::cases()));
-            $table->unsignedBigInteger('code')->index();
+            $table->string('code', 12)->unique();
             $table->integer('volume');
             $table->char('row', 1);
             $table->integer('locker');

@@ -22,7 +22,7 @@ class CreateManyTicketRequest extends FormRequest
         return [
             'code' => [
                 'required',
-                'integer',
+                'string',
             ],
             'query_type' => ['required', 'in:' . implode(',', array_map(fn($t) => $t->value, TicketQueryType::cases()))],
             'status' => ['required', 'string'],
@@ -50,7 +50,7 @@ class CreateManyTicketRequest extends FormRequest
     {
         return [
             'code.required' => 'El código es requerido.',
-            'code.integer' => 'El código debe ser un número.',
+            'code.string' => 'El código debe ser un texto.',
             'query_type.required' => 'El tipo de consulta es requerido.',
             'query_type.in' => 'El tipo de consulta es inválido.',
             'status.required' => 'El estado es requerido.',
