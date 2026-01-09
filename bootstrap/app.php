@@ -42,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Detecta API por prefijo /api o Accept JSON
         $isApi = fn() => request()->expectsJson() || request()->is('api/*') || request()->is('oauth/*');
+        // $isApi = fn() => false;
 
         // Bad Request
         $exceptions->render(function (BadRequestHttpException $e) use ($isApi) {

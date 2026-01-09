@@ -20,7 +20,7 @@ class CreateTicketRequest extends FormRequest
         return [
             'code' => [
                 'required',
-                'integer',
+                'string',
                 'unique:' . Ticket::class . ',code,volume,query_type,' . $this->code . ',' . $this->volume . ',' . $this->query_type
             ],
             'query_type' => 'required|in:' . implode(
@@ -43,7 +43,7 @@ class CreateTicketRequest extends FormRequest
     {
         return [
             'code.required' => 'El código es requerido.',
-            'code.integer' => 'El código debe ser un número.',
+            'code.string' => 'El código debe ser un texto.',
             'code.unique' => 'El código ya está en uso.',
             'volume.required' => 'El tomo es requerido.',
             'volume.integer' => 'El tomo debe ser un número.',
@@ -71,8 +71,6 @@ class CreateTicketRequest extends FormRequest
             'query_type' => $this->query_type,
             'user_id' => Auth::id(),
             'status' => $this->status,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
     }
 }

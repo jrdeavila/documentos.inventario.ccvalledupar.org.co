@@ -27,10 +27,8 @@ class TicketsExport implements FromQuery, WithHeadings, WithMapping, ShouldQueue
         }
         // Filtra por created_at entre las fechas (incluyendo todo el día final)
         return Ticket::query()
-            ->whereBetween('created_at', [
-                $this->startDate . ' 00:00:00',
-                $this->endDate . ' 23:59:59',
-            ])
+            ->whereDate('created_at', '>=', $this->startDate)
+            ->whereDate('created_at', '<=', $this->endDate)
             ->orderBy('created_at', 'asc');
     }
 
