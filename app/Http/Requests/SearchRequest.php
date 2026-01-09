@@ -19,7 +19,7 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|integer',
+            'code' => 'required|string',
             'query_type' => 'required|in:' . implode(
                 ',',
                 array_map(
