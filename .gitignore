@@ -22,3 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+docker/id_rsa_tunel.pub
+docker/id_rsa_tunel
+supervisord.pid
